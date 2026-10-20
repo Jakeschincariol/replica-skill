@@ -133,6 +133,18 @@ class ReadWrite(unittest.TestCase):
         with self.assertRaises(imgdiff.PngError):
             imgdiff.read_png(self.p("x.png"))
 
+    def test_truncated_or_short_ihdr_is_refused(self):
+        encode(self.p("ok.png"), 1, 1, [[1, 2, 3]], 2)
+        with open(self.p("ok.png"), "rb") as fh:
+            data = fh.read()
+        short_length = data[:8] + struct.pack(">I", 12) + data[12:]
+        for name, body in (("cut.png", data[:20]), ("short.png", short_length)):
+            with open(self.p(name), "wb") as fh:
+                fh.write(body)
+            with self.assertRaises(imgdiff.PngError) as ctx:
+                imgdiff.read_png(self.p(name))
+            self.assertIn("malformed IHDR", str(ctx.exception))
+
 
 class Compare(unittest.TestCase):
     def test_identical_is_100_with_no_regions(self):
