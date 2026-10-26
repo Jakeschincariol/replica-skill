@@ -15,8 +15,10 @@ exits 1 if it finds anything, so it can block a deploy.
 
 Names match case-insensitively anywhere, including inside identifiers
 (CalendlyButton, calendly_sync), because those ship too. Colours match in any
-case and in short form (#06f matches #0066ff). File and folder names are
-checked as well as contents.
+case and in every form a codebase writes them: #06f, #0066ff, with alpha
+(#0066ffcc, #06fc), Android ARGB (#ff0066ff, 0xFF0066FF, Color(0xFF0066FF)) and
+rgb(0, 102, 255) / rgba(...). File and folder names are checked as well as
+contents.
 
 Skipped: .git, node_modules, build output folders, lock files, binary files,
 and the replica/ planning folder (where the original's name belongs). Pass
@@ -37,15 +39,45 @@ SKIP_FILES = {"package-lock.json", "yarn.lock", "pnpm-lock.yaml", "bun.lockb",
 BINARY_EXT = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".icns", ".pdf", ".zip",
               ".gz", ".woff", ".woff2", ".ttf", ".otf", ".eot", ".mp4", ".mov", ".mp3",
               ".wav", ".avif", ".heic", ".psd", ".sketch", ".fig", ".jar", ".so", ".dylib"}
-HEX = re.compile(r"#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})(?![0-9a-zA-Z])")
-BINARY_ASSET_HINT = re.compile(r"\.(png|jpe?g|svg|webp|gif|ico|woff2?|ttf|otf)$", re.I)
+HEX = re.compile(r"#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})"
+                 r"(?![0-9a-zA-Z])")
+ARGB_INT = re.compile(r"\b0x([0-9a-fA-F]{8}|[0-9a-fA-F]{6})\b")
+RGB_FN = re.compile(r"\brgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})", re.I)
 
 
 def norm_hex(h):
-    h = h.lower().lstrip("#")
-    if len(h) == 3:
+    h = h.strip().lower().lstrip("#")
+    if len(h) in (3, 4):
         h = "".join(c * 2 for c in h)
     return "#" + h
+
+
+def colour_keys(token):
+    """The #rrggbb values a colour written in code could mean.
+
+    8 digits is ambiguous: CSS writes #RRGGBBAA, Android writes #AARRGGBB, so
+    both readings are returned. Alpha is ignored: the brand colour at 80% is
+    still the brand colour.
+    """
+    h = norm_hex(token)[1:]
+    if len(h) == 6:
+        return {"#" + h}
+    if len(h) == 8:
+        return {"#" + h[:6], "#" + h[2:]}
+    return set()
+
+
+def colours_in(line):
+    """Yield (as written, set of #rrggbb it could be) for every colour on a line."""
+    for m in HEX.finditer(line):
+        yield m.group(0), colour_keys(m.group(0))
+    for m in ARGB_INT.finditer(line):
+        h = m.group(1).lower()
+        yield m.group(0), {"#" + (h[2:] if len(h) == 8 else h)}
+    for m in RGB_FN.finditer(line):
+        rgb = [int(v) for v in m.groups()]
+        if all(v <= 255 for v in rgb):
+            yield m.group(0), {"#%02x%02x%02x" % tuple(rgb)}
 
 
 def build_patterns(avoid, domains):
@@ -76,7 +108,14 @@ def is_binary(path):
 
 def sweep(root, avoid=(), domains=(), colors=(), include_replica=False, max_size=2_000_000):
     pats = build_patterns(avoid, domains)
-    cols = {norm_hex(c) for c in colors if HEX.fullmatch(c.strip())}
+    cols = set()
+    for c in colors:
+        c = c.strip()
+        if not c.startswith("#"):
+            c = "#" + c
+        if not HEX.fullmatch(c):
+            raise ValueError("not a hex colour: %r" % c)
+        cols.add(norm_hex(c)[:7])  # the brand list is CSS: drop any alpha
     hits = []
     root = os.path.abspath(root)
     for dirpath, dirnames, filenames in os.walk(root):
@@ -117,10 +156,11 @@ def sweep(root, avoid=(), domains=(), colors=(), include_replica=False, max_size
                         hits.append({"file": rel, "line": i, "kind": kind, "match": label,
                                      "text": line.strip()[:160]})
                 if cols:
-                    for m in HEX.finditer(line):
-                        if norm_hex(m.group(0)) in cols:
+                    for written, keys in colours_in(line):
+                        found = keys & cols
+                        if found:
                             hits.append({"file": rel, "line": i, "kind": "color",
-                                         "match": norm_hex(m.group(0)),
+                                         "match": sorted(found)[0],
                                          "text": line.strip()[:160]})
     return hits
 
@@ -168,7 +208,12 @@ def main(argv=None):
         print("sweep: nothing to look for. Pass --avoid with the original app's name.",
               file=sys.stderr)
         return 2
-    hits = sweep(args.root, avoid, domains, colors, args.include_replica)
+    try:
+        hits = sweep(args.root, avoid, domains, colors, args.include_replica)
+    except ValueError as exc:
+        # a typo in the colour list must not turn into a silent "Clean"
+        print("sweep: %s" % exc, file=sys.stderr)
+        return 2
     print(json.dumps(hits, indent=2) if args.json else render(hits))
     return 1 if hits else 0
 

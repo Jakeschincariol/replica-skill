@@ -21,7 +21,9 @@ Two modes:
                     chase the original's pixels.
 
 Both images are scaled to the same width (--width, default 480) and compared
-over the shared height. A height difference is reported, not hidden.
+over the shared height. A height difference is reported, not hidden, and in
+layout mode anything below the end of the shorter screenshot scores as a miss,
+so a page that is only half built cannot score as a match.
 
 Reads 8 and 16 bit PNGs (grey, RGB, palette, with or without alpha). Interlaced
 PNGs are refused with a message: re-save the screenshot without interlacing.
@@ -355,6 +357,21 @@ def compare(img_a, img_b, mode="layout", width=480, cols=12, tolerance=24,
                         for x in range(x0, x1):
                             g0 = dim[y][x][0]
                             dim[y][x] = (min(255, g0 + 30), g0 // 3, g0 // 3)
+        # Content below the end of the shorter screenshot is content the other
+        # one does not have. Leaving it out would let a half-built page score
+        # as a match, so every non-empty cell there counts as a miss.
+        longer = a[2] if a[1] > b[1] else b[2]
+        extra = edges(gray(longer[h:]), edge_threshold) if len(longer) > h else []
+        unmatched = 0
+        for r in range(int(math.ceil(len(extra) / float(cell)))):
+            for c in range(cols):
+                y0, y1 = r * cell, min(len(extra), (r + 1) * cell)
+                x0, x1 = c * cell, min(w, (c + 1) * cell)
+                area = (y1 - y0) * (x1 - x0)
+                if area > 0 and sum(sum(extra[y][x0:x1]) for y in range(y0, y1)) / float(area) >= 0.01:
+                    sims.append(0.0)
+                    unmatched += 1
+        report["unmatched_cells"] = unmatched
         score = 100.0 * sum(sims) / len(sims) if sims else 100.0
 
     regions = []

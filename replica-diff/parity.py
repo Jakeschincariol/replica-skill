@@ -30,6 +30,7 @@ reported next to the feature score, and the overall score is
 
 import argparse
 import csv
+import glob
 import json
 import sys
 
@@ -127,9 +128,20 @@ def score(rows):
     }
 
 
+def expand(paths):
+    """Expand globs ourselves: cmd and PowerShell pass diffs/*.json through as-is."""
+    out = []
+    for p in paths:
+        found = sorted(glob.glob(p)) if glob.has_magic(p) else [p]
+        if not found:
+            raise MatrixError("no files match %s" % p)
+        out.extend(found)
+    return out
+
+
 def visual_scores(paths):
     scores = []
-    for p in paths:
+    for p in expand(paths):
         with open(p, encoding="utf-8") as fh:
             data = json.load(fh)
         if "score" not in data:

@@ -98,7 +98,9 @@ python3 sweep.py . --config replica/brand.json
 ```
 
 It searches file contents and file names for the original's name (also inside
-identifiers like `CalendlyEmbed`), domains and colours, skipping
+identifiers like `CalendlyEmbed`), domains and colours (in every form code
+writes them: `#06f`, `#0066ffcc`, `rgb()`, and Android's `#AARRGGBB` and
+`Color(0xFF0066FF)`), skipping
 `node_modules`, build output and the `replica/` planning folder. Exit 1 means
 something is left. Fix until it says clean. Also check by eye: the favicon,
 the page titles, the email templates, the OG image, the app icon.

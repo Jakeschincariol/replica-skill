@@ -15,6 +15,10 @@ bold), which only needs 3:1. Without a pairs list, every colour whose name
 has text, fg or on- in it is checked against every colour whose name has bg,
 background or surface in it.
 
+Colours can be #rgb, #rrggbb, with alpha (#rrggbbaa, #rgba), or rgb() / rgba().
+A translucent text colour is blended onto its background before measuring,
+the way it renders; a translucent background is blended onto white.
+
 Thresholds (WCAG 2.2): normal text AA 4.5, AAA 7. Large text AA 3, AAA 4.5.
 UI parts and focus rings ("ui" as the third item) need 3.
 Exit code 1 when any pair fails AA, so it can gate a build.
@@ -25,18 +29,47 @@ import json
 import re
 import sys
 
-HEX = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+HEX = re.compile(r"^#?([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$")
+RGB = re.compile(r"^rgba?\(\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})"
+                 r"\s*(?:[,/]\s*([\d.]+)(%?))?\s*\)$", re.I)
 NEEDS = {"normal": (4.5, 7.0), "large": (3.0, 4.5), "ui": (3.0, 3.0)}
 
 
+def parse_colour(value):
+    """#rgb, #rgba, #rrggbb, #rrggbbaa, rgb() or rgba() -> (r, g, b, alpha 0-1)."""
+    value = value.strip()
+    m = HEX.match(value)
+    if m:
+        h = m.group(1)
+        if len(h) in (3, 4):
+            h = "".join(c * 2 for c in h)
+        a = int(h[6:8], 16) / 255.0 if len(h) == 8 else 1.0
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (a,)
+    m = RGB.match(value)
+    if m and all(int(v) <= 255 for v in m.groups()[:3]):
+        a = 1.0
+        if m.group(4):
+            a = float(m.group(4)) / (100.0 if m.group(5) else 1.0)
+        return tuple(int(v) for v in m.groups()[:3]) + (min(1.0, a),)
+    raise ValueError("not a colour: %r" % value)
+
+
+def is_colour(value):
+    try:
+        parse_colour(value)
+        return True
+    except ValueError:
+        return False
+
+
 def parse_hex(value):
-    m = HEX.match(value.strip())
-    if not m:
-        raise ValueError("not a hex colour: %r" % value)
-    h = m.group(1)
-    if len(h) == 3:
-        h = "".join(c * 2 for c in h)
-    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return parse_colour(value)[:3]
+
+
+def over(fg, bg):
+    """Composite a translucent colour onto an opaque one, the way it renders."""
+    a = fg[3]
+    return tuple(fg[i] * a + bg[i] * (1 - a) for i in range(3))
 
 
 def luminance(rgb):
@@ -48,7 +81,10 @@ def luminance(rgb):
 
 
 def ratio(fg, bg):
-    la, lb = luminance(parse_hex(fg)), luminance(parse_hex(bg))
+    # a translucent background sits on the page (white); translucent text on its background
+    b = over(parse_colour(bg), (255, 255, 255))
+    f = over(parse_colour(fg), b)
+    la, lb = luminance(f), luminance(b)
     hi, lo = max(la, lb), min(la, lb)
     return (hi + 0.05) / (lo + 0.05)
 
@@ -68,14 +104,14 @@ def flatten(obj, prefix=""):
                 continue
             key = "%s-%s" % (prefix, k) if prefix else k
             out.update(flatten(v, key))
-    elif isinstance(obj, str) and HEX.match(obj.strip()):
+    elif isinstance(obj, str) and is_colour(obj):
         out[prefix] = obj.strip()
     return out
 
 
 def colours(tokens):
     src = tokens.get("color", tokens.get("colors", tokens.get("colour", {})))
-    return {k: v for k, v in flatten(src).items() if HEX.match(v)}
+    return {k: v for k, v in flatten(src).items() if is_colour(v)}
 
 
 def default_pairs(cols):
@@ -94,7 +130,8 @@ def check(cols, pairs):
         if size not in NEEDS:
             size = "normal"
         if fg not in cols or bg not in cols:
-            rows.append({"fg": fg, "bg": bg, "size": size, "error": "unknown token"})
+            rows.append({"fg": fg, "bg": bg, "size": size,
+                         "error": "unknown token, or its value is not a hex or rgb() colour"})
             continue
         r = ratio(cols[fg], cols[bg])
         aa, aaa = NEEDS[size]
@@ -124,11 +161,11 @@ def render(rows):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("args", nargs="+", help="tokens.json, or two hex colours")
+    ap.add_argument("args", nargs="+", help="tokens.json, or two colours (hex or rgb())")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     try:
-        if len(a.args) == 2 and all(HEX.match(x) for x in a.args):
+        if len(a.args) == 2 and all(is_colour(x) for x in a.args):
             cols = {"fg": a.args[0], "bg": a.args[1]}
             pairs = [["fg", "bg"]]
         else:
