@@ -47,6 +47,6 @@
     {"id": "customisation", "label": "Customisation and control", "kind": "request",
      "patterns": ["\\bcustomi[sz]", "\\bdark mode\\b", "\\btheme\\b", "\\bbranding\\b", "\\bwhite.?label\\b", "\\btemplates?\\b", "\\bsettings?\\b", "\\boption to\\b"]},
     {"id": "collaboration", "label": "Teams and sharing", "kind": "request",
-     "patterns": ["\\bteam(s|mates?)?\\b", "\\bshar(e|ing)\\b", "\\bcollaborat", "\\bmultiple (users|accounts|people)\\b", "\\broles?\\b", "\\bpermissions for\\b"]}
+     "patterns": ["(?<!support )(?<!customer )(?<!service )(?<!dev )\\bteam(s|mates?)?\\b", "\\bshar(e|ing)\\b", "\\bcollaborat", "\\bmultiple (users|accounts|people)\\b", "\\broles?\\b", "\\bpermissions for\\b"]}
   ]
 }

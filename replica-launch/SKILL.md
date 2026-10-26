@@ -20,7 +20,11 @@ and `replica/brand.json`. Writes `replica/launch/`: `landing.md`,
 python3 listing.py replica/launch/listing.json      # limits, claims, the original's name
 ```
 
-Start from `listing.example.json` in this folder.
+Start from `listing.example.json` in this folder. Shipping in more than one
+language? Put each under `"locales": {"en-US": {...}, "es-MX": {...}}` inside
+the store. Every locale is linted, and App Store keywords repeated across
+locales are flagged: a storefront that indexes two locales (the US store reads
+en-US and es-MX) counts a word once, so the copy is wasted characters.
 
 ## The rules
 

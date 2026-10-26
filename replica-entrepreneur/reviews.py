@@ -41,6 +41,33 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_THEMES = os.path.join(HERE, "themes.json")
 SENTENCE = re.compile(r"(?<=[.!?])\s+|\n+")
+# "No ads, no bugs, never crashes" is praise. A complaint match with one of
+# these in the three words before it (same clause) does not count. Deliberately
+# not here: don't, can't, won't. "I don't like the price" and "I can't stand
+# the ads" are complaints.
+NEGATORS = {"no", "not", "never", "without", "zero", "nothing", "none", "hardly", "barely",
+            "nor", "isnt", "wasnt", "arent", "werent", "doesnt", "didnt", "hasnt", "havent"}
+WORD = re.compile(r"[a-z']+")
+
+
+def negated(text, start):
+    """True when the words just before position start negate what follows."""
+    clause = re.split(r"[.!?;,\n]|\bbut\b", text[:start].lower())[-1]
+    before = [w.replace("'", "") for w in WORD.findall(clause.replace("’", "'"))][-3:]
+    return any(w in NEGATORS for w in before)
+
+
+def finder(pattern, check_negation):
+    """A search function for one theme pattern, skipping negated matches if asked."""
+    if not check_negation:
+        return pattern.search
+
+    def search(text):
+        for m in pattern.finditer(text):
+            if not negated(text, m.start()):
+                return m
+        return None
+    return search
 
 
 class FeedbackError(Exception):
@@ -136,12 +163,16 @@ def weight(review, today, months):
 
 
 def snippet(text, pattern, limit=220):
-    """The first sentence of text that matches pattern, verbatim."""
+    """The first sentence of text that matches pattern, verbatim.
+
+    pattern is a compiled regex or a search function from finder().
+    """
+    search = getattr(pattern, "search", pattern)
     for sent in SENTENCE.split(text):
-        if pattern.search(sent):
+        if search(sent):
             s = sent.strip()
             if len(s) > limit:
-                m = pattern.search(s)
+                m = search(s)
                 start = max(0, m.start() - limit // 2)
                 s = s[start:start + limit].strip()
                 s = ("..." if start > 0 else "") + s + "..."
@@ -161,7 +192,8 @@ def analyse(reviews, themes, request_patterns, today=None, months=18):
         w = weight(rv, today, months)
         matched = False
         for t in themes:
-            hit = next((p for p in t["patterns"] if p.search(rv["text"])), None)
+            searches = [finder(p, t["kind"] == "complaint") for p in t["patterns"]]
+            hit = next((s for s in searches if s(rv["text"])), None)
             if hit is None:
                 continue
             matched = True
