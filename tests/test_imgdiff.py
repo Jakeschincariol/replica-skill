@@ -133,6 +133,26 @@ class ReadWrite(unittest.TestCase):
         with self.assertRaises(imgdiff.PngError):
             imgdiff.read_png(self.p("x.png"))
 
+    def test_truncated_ihdr_is_a_clean_error(self):
+        imgdiff.write_png(self.p("good.png"), *page(4, 2))
+        with open(self.p("good.png"), "rb") as fh:
+            good = fh.read()
+        # Cut mid-save: signature + IHDR header + 4 of its 13 data bytes.
+        with open(self.p("cut.png"), "wb") as fh:
+            fh.write(good[:20])
+        with self.assertRaises(imgdiff.PngError) as ctx:
+            imgdiff.read_png(self.p("cut.png"))
+        self.assertIn("malformed IHDR", str(ctx.exception))
+        # An IHDR chunk that declares a short length is the same error.
+        ihdr = struct.pack(">IIBBBBB", 4, 2, 8, 2, 0, 0, 0)[:12]
+        bad = (imgdiff.SIG + struct.pack(">I", 12) + b"IHDR" + ihdr +
+               struct.pack(">I", zlib.crc32(b"IHDR" + ihdr) & 0xFFFFFFFF))
+        with open(self.p("short.png"), "wb") as fh:
+            fh.write(bad)
+        with self.assertRaises(imgdiff.PngError) as ctx:
+            imgdiff.read_png(self.p("short.png"))
+        self.assertIn("malformed IHDR", str(ctx.exception))
+
 
 class Compare(unittest.TestCase):
     def test_identical_is_100_with_no_regions(self):
@@ -204,6 +224,20 @@ class Cli(unittest.TestCase):
     def test_bad_file_exits_2(self):
         with redirect_stderr(io.StringIO()):
             self.assertEqual(imgdiff.main(["/nope/a.png", "/nope/b.png"]), 2)
+
+    def test_truncated_ihdr_exits_2_with_one_line(self):
+        with tempfile.TemporaryDirectory() as d:
+            good = os.path.join(d, "good.png")
+            cut = os.path.join(d, "cut.png")
+            imgdiff.write_png(good, *page())
+            with open(good, "rb") as fh:
+                data = fh.read()
+            with open(cut, "wb") as fh:
+                fh.write(data[:20])
+            err = io.StringIO()
+            with redirect_stderr(err):
+                self.assertEqual(imgdiff.main([cut, good]), 2)
+            self.assertEqual(err.getvalue(), "imgdiff: %s has a malformed IHDR chunk\n" % cut)
 
 
 if __name__ == "__main__":

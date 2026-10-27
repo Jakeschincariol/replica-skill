@@ -124,6 +124,8 @@ def read_png(path):
         chunk = data[pos + 8:pos + 8 + length]
         pos += 12 + length
         if ctype == b"IHDR":
+            if len(chunk) != 13:
+                raise PngError("%s has a malformed IHDR chunk" % path)
             ihdr = struct.unpack(">IIBBBBB", chunk)
         elif ctype == b"PLTE":
             plte = [tuple(chunk[i:i + 3]) for i in range(0, len(chunk), 3)]
