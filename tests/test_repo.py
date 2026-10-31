@@ -20,24 +20,26 @@ def frontmatter(path):
 
 
 class Repo(unittest.TestCase):
-    def test_eleven_skill_folders_at_the_root(self):
-        found = sorted(d for d in os.listdir(ROOT)
-                       if os.path.isfile(os.path.join(ROOT, d, "SKILL.md")))
+    def test_eleven_skill_folders_under_skills(self):
+        found = sorted(d for d in os.listdir(os.path.join(ROOT, "skills"))
+                       if os.path.isfile(os.path.join(ROOT, "skills", d, "SKILL.md")))
         self.assertEqual(found, sorted(SKILLS))
 
     def test_frontmatter_name_and_description(self):
         for s in SKILLS:
-            fm, text = frontmatter(os.path.join(ROOT, s, "SKILL.md"))
+            fm, text = frontmatter(os.path.join(ROOT, "skills", s, "SKILL.md"))
             self.assertIn("name: %s\n" % s, fm + "\n", s)
             self.assertRegex(fm, r"description: ", s)
             self.assertGreater(len(fm), 200, "%s description is too thin" % s)
             self.assertGreater(len(text.splitlines()), 60, s)
 
-    def test_plugin_manifest_points_at_the_root_skills(self):
+    def test_plugin_manifest_uses_default_skills_dir(self):
         with open(os.path.join(ROOT, ".claude-plugin", "plugin.json")) as fh:
             plugin = json.load(fh)
         self.assertEqual(plugin["name"], "replica-skill")
-        self.assertEqual(plugin["skills"], "./")
+        # No "skills" key: Claude Code looks in skills/ by default, and
+        # pointing it at "./" makes the plugin fail to load (#18).
+        self.assertNotIn("skills", plugin)
         self.assertEqual(plugin["description"], ABOUT)
         with open(os.path.join(ROOT, ".claude-plugin", "marketplace.json")) as fh:
             market = json.load(fh)
