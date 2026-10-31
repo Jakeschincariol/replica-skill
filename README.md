@@ -39,7 +39,7 @@ plain `/replica-recon`:
 
 ```bash
 git clone https://github.com/Jakeschincariol/replica-skill.git
-cp -r replica-skill/replica-* ~/.claude/skills/
+cp -r replica-skill/skills/replica-* ~/.claude/skills/
 ```
 
 Project-local instead of global: copy the same folders into your repo's

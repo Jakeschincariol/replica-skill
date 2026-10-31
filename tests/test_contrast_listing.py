@@ -34,7 +34,7 @@ class Contrast(unittest.TestCase):
         self.assertTrue(rows[1]["aa"])
 
     def test_shipped_tokens_template_passes(self):
-        path = os.path.join(ROOT, "replica-design", "tokens.json")
+        path = os.path.join(ROOT, "skills", "replica-design", "tokens.json")
         with redirect_stdout(io.StringIO()):
             self.assertEqual(contrast.main([path]), 0)
 
@@ -97,7 +97,7 @@ class Listing(unittest.TestCase):
         self.assertEqual(listing.length("café"), 4)
 
     def test_shipped_example_is_clean(self):
-        path = os.path.join(ROOT, "replica-launch", "listing.example.json")
+        path = os.path.join(ROOT, "skills", "replica-launch", "listing.example.json")
         with redirect_stdout(io.StringIO()):
             self.assertEqual(listing.main([path]), 0)
 
