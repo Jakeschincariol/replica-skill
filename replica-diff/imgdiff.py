@@ -112,6 +112,10 @@ def read_png(path):
     with open(path, "rb") as fh:
         data = fh.read()
     if data[:8] != SIG:
+        if data[:3] == b"\xff\xd8\xff":
+            raise PngError("%s is a JPEG image, not a PNG. Convert to PNG before diffing." % path)
+        if data[:4] == b"RIFF" and len(data) >= 12 and data[8:12] == b"WEBP":
+            raise PngError("%s is a WebP image, not a PNG. Convert to PNG before diffing." % path)
         raise PngError("%s is not a PNG" % path)
     pos = 8
     ihdr = None
