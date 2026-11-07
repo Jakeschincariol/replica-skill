@@ -128,5 +128,12 @@ class Feedback(unittest.TestCase):
         self.assertLessEqual(len(s), 106)
 
 
+    def test_parse_date_supports_iso_timestamp_and_slashes(self):
+        d1 = reviews.parse_date("2026-08-01T14:30:00Z")
+        self.assertEqual(d1, datetime.date(2026, 8, 1))
+        d2 = reviews.parse_date("2026/08/01")
+        self.assertEqual(d2, datetime.date(2026, 8, 1))
+
+
 if __name__ == "__main__":
     unittest.main()
