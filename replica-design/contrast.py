@@ -29,14 +29,27 @@ HEX = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 NEEDS = {"normal": (4.5, 7.0), "large": (3.0, 4.5), "ui": (3.0, 3.0)}
 
 
+RGB_FUNC = re.compile(r"^rgba?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})", re.I)
+
+
+def parse_color(value):
+    val = value.strip()
+    m_hex = HEX.match(val)
+    if m_hex:
+        h = m_hex.group(1)
+        if len(h) == 3:
+            h = "".join(c * 2 for c in h)
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    m_rgb = RGB_FUNC.match(val)
+    if m_rgb:
+        r, g, b = (int(x) for x in m_rgb.groups())
+        if all(0 <= c <= 255 for c in (r, g, b)):
+            return (r, g, b)
+    raise ValueError("not a supported hex or rgb colour: %r" % value)
+
+
 def parse_hex(value):
-    m = HEX.match(value.strip())
-    if not m:
-        raise ValueError("not a hex colour: %r" % value)
-    h = m.group(1)
-    if len(h) == 3:
-        h = "".join(c * 2 for c in h)
-    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return parse_color(value)
 
 
 def luminance(rgb):
@@ -68,7 +81,7 @@ def flatten(obj, prefix=""):
                 continue
             key = "%s-%s" % (prefix, k) if prefix else k
             out.update(flatten(v, key))
-    elif isinstance(obj, str) and HEX.match(obj.strip()):
+    elif isinstance(obj, str) and (HEX.match(obj.strip()) or RGB_FUNC.match(obj.strip())):
         out[prefix] = obj.strip()
     return out
 

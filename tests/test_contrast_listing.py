@@ -44,6 +44,12 @@ class Contrast(unittest.TestCase):
             self.assertEqual(contrast.main(["#222222", "#ffffff"]), 0)
 
 
+    def test_rgb_functional_colors_support(self):
+        self.assertAlmostEqual(contrast.ratio("rgb(0, 0, 0)", "rgb(255, 255, 255)"), 21.0, places=2)
+        cols = contrast.colours({"color": {"text": "rgb(34, 34, 34)", "bg": "#ffffff"}})
+        self.assertEqual(cols, {"text": "rgb(34, 34, 34)", "bg": "#ffffff"})
+
+
 class Listing(unittest.TestCase):
     def good(self):
         return {
