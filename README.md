@@ -127,6 +127,7 @@ python3 replica-entrepreneur/reviews.py replica/reviews.csv             # what u
 python3 replica-design/contrast.py replica/design/tokens.json           # WCAG contrast on your tokens
 python3 replica-brand/sweep.py . --avoid "Original App"                 # anything of the original left?
 python3 replica-launch/listing.py replica/launch/listing.json           # store limits + copycat checks
+python3 replica-deploy/preflight.py .                                   # runs parity, contrast, sweep, listing gates
 ```
 
 **`imgdiff.py`** reads PNGs with no libraries, turns both screenshots into
@@ -193,12 +194,12 @@ replica-architect/     SKILL.md, architecture.md
 replica-design/        SKILL.md, tokens.json, contrast.py
 replica-build/         SKILL.md
 replica-backend/       SKILL.md
-replica-test/          SKILL.md, test-plan.md, bug-report.md, e2e.example.spec.ts
+replica-test/          SKILL.md, test-plan.md, bug-report.md, e2e.example.spec.ts, cypress.example.cy.ts
 replica-diff/          SKILL.md, imgdiff.py, parity.py
 replica-entrepreneur/  SKILL.md, reviews.py, themes.json
 replica-brand/         SKILL.md, sweep.py
 replica-launch/        SKILL.md, listing.py, listing.example.json
-replica-deploy/        SKILL.md, preflight.md
+replica-deploy/        SKILL.md, preflight.md, preflight.py
 tests/                 the tests for every tool
 ```
 
