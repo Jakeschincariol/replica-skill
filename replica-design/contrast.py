@@ -21,22 +21,43 @@ Exit code 1 when any pair fails AA, so it can gate a build.
 """
 
 import argparse
+import colorsys
 import json
 import re
 import sys
 
 HEX = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+RGB_FUNC = re.compile(r"^rgba?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})", re.I)
+HSL_FUNC = re.compile(
+    r"^hsla?\s*\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)%\s*,\s*(\d+(?:\.\d+)?)%", re.I
+)
 NEEDS = {"normal": (4.5, 7.0), "large": (3.0, 4.5), "ui": (3.0, 3.0)}
 
 
+def parse_color(value):
+    val = value.strip()
+    m_hex = HEX.match(val)
+    if m_hex:
+        h = m_hex.group(1)
+        if len(h) == 3:
+            h = "".join(c * 2 for c in h)
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    m_rgb = RGB_FUNC.match(val)
+    if m_rgb:
+        r, g, b = (int(x) for x in m_rgb.groups())
+        if all(0 <= c <= 255 for c in (r, g, b)):
+            return (r, g, b)
+    m_hsl = HSL_FUNC.match(val)
+    if m_hsl:
+        hue, sat, lig = (float(x) for x in m_hsl.groups())
+        if 0.0 <= sat <= 100.0 and 0.0 <= lig <= 100.0:
+            r, g, b = colorsys.hls_to_rgb((hue % 360.0) / 360.0, lig / 100.0, sat / 100.0)
+            return (int(round(r * 255)), int(round(g * 255)), int(round(b * 255)))
+    raise ValueError("not a supported hex, rgb, or hsl colour: %r" % value)
+
+
 def parse_hex(value):
-    m = HEX.match(value.strip())
-    if not m:
-        raise ValueError("not a hex colour: %r" % value)
-    h = m.group(1)
-    if len(h) == 3:
-        h = "".join(c * 2 for c in h)
-    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return parse_color(value)
 
 
 def luminance(rgb):
@@ -53,29 +74,34 @@ def ratio(fg, bg):
     return (hi + 0.05) / (lo + 0.05)
 
 
+def is_supported_color(val):
+    s = val.strip()
+    return bool(HEX.match(s) or RGB_FUNC.match(s) or HSL_FUNC.match(s))
+
+
 def flatten(obj, prefix=""):
     """{"color": {"text": {"muted": "#..."}}} -> {"text-muted": "#..."}."""
     out = {}
     if isinstance(obj, dict):
         if "value" in obj and isinstance(obj["value"], str):
-            out[prefix] = obj["value"]
+            out[prefix] = obj["value"].strip()
             return out
         if "$value" in obj and isinstance(obj["$value"], str):
-            out[prefix] = obj["$value"]
+            out[prefix] = obj["$value"].strip()
             return out
         for k, v in obj.items():
             if k.startswith("$") or k.startswith("_"):
                 continue
             key = "%s-%s" % (prefix, k) if prefix else k
             out.update(flatten(v, key))
-    elif isinstance(obj, str) and HEX.match(obj.strip()):
+    elif isinstance(obj, str) and is_supported_color(obj):
         out[prefix] = obj.strip()
     return out
 
 
 def colours(tokens):
     src = tokens.get("color", tokens.get("colors", tokens.get("colour", {})))
-    return {k: v for k, v in flatten(src).items() if HEX.match(v)}
+    return {k: v for k, v in flatten(src).items() if is_supported_color(v)}
 
 
 def default_pairs(cols):
@@ -128,11 +154,11 @@ def main(argv=None):
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     try:
-        if len(a.args) == 2 and all(HEX.match(x) for x in a.args):
+        if len(a.args) == 2 and all(is_supported_color(x) for x in a.args):
             cols = {"fg": a.args[0], "bg": a.args[1]}
             pairs = [["fg", "bg"]]
         else:
-            with open(a.args[0], encoding="utf-8") as fh:
+            with open(a.args[0], encoding="utf-8-sig") as fh:
                 tokens = json.load(fh)
             cols = colours(tokens)
             pairs = tokens.get("pairs") or default_pairs(cols)

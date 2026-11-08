@@ -206,5 +206,22 @@ class Cli(unittest.TestCase):
             self.assertEqual(imgdiff.main(["/nope/a.png", "/nope/b.png"]), 2)
 
 
+    def test_friendly_error_on_jpeg_and_webp(self):
+        with tempfile.TemporaryDirectory() as d:
+            jpg = os.path.join(d, "sample.jpg")
+            webp = os.path.join(d, "sample.webp")
+            with open(jpg, "wb") as fh:
+                fh.write(b"\xff\xd8\xff\xe0\x00\x10JFIF\x00")
+            with open(webp, "wb") as fh:
+                fh.write(b"RIFF\x14\x00\x00\x00WEBPVP8 \x08\x00\x00\x00")
+            with self.assertRaises(imgdiff.PngError) as ctx_jpg:
+                imgdiff.read_png(jpg)
+            self.assertIn("JPEG image, not a PNG", str(ctx_jpg.exception))
+
+            with self.assertRaises(imgdiff.PngError) as ctx_webp:
+                imgdiff.read_png(webp)
+            self.assertIn("WebP image, not a PNG", str(ctx_webp.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

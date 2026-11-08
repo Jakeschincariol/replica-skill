@@ -81,5 +81,13 @@ class Sweep(unittest.TestCase):
             self.assertEqual(sweep.main([clean]), 2)
 
 
+    def test_handles_utf16_powershell_redirection_files(self):
+        put(self.root, "src/powershell_output.txt",
+            "Leftover reference: Calendly\n".encode("utf-16"), binary=True)
+        hits = self.run_sweep()
+        files = {h["file"] for h in hits}
+        self.assertTrue(any(f.endswith("powershell_output.txt") for f in files))
+
+
 if __name__ == "__main__":
     unittest.main()

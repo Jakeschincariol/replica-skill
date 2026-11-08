@@ -48,7 +48,7 @@ class FeedbackError(Exception):
 
 
 def load_themes(path=DEFAULT_THEMES):
-    with open(path, encoding="utf-8") as fh:
+    with open(path, encoding="utf-8-sig") as fh:
         data = json.load(fh)
     themes = []
     for t in data.get("themes", []):
@@ -63,6 +63,8 @@ def load_themes(path=DEFAULT_THEMES):
 
 def parse_date(text):
     text = (text or "").strip()
+    # Support ISO timestamps (e.g. 2026-08-01T12:00:00Z) or YYYY/MM/DD
+    text = text.replace("/", "-")
     for fmt, n in (("%Y-%m-%d", 10), ("%Y-%m", 7)):
         try:
             return _dt.datetime.strptime(text[:n], fmt).date()

@@ -69,9 +69,28 @@ def is_binary(path):
         return True
     try:
         with open(path, "rb") as fh:
-            return b"\0" in fh.read(4096)
+            chunk = fh.read(4096)
+            # UTF-16 LE/BE text files (common on Windows) contain null bytes
+            if chunk.startswith((b"\xff\xfe", b"\xfe\xff")):
+                return False
+            return b"\0" in chunk
     except OSError:
         return True
+
+
+def read_text_lines(path):
+    """Read lines from a text file, handling UTF-8 (with or without BOM) and UTF-16."""
+    try:
+        with open(path, "rb") as fh:
+            raw = fh.read()
+    except OSError:
+        return []
+    if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
+        try:
+            return raw.decode("utf-16").splitlines(keepends=True)
+        except UnicodeDecodeError:
+            pass
+    return raw.decode("utf-8-sig", errors="replace").splitlines(keepends=True)
 
 
 def sweep(root, avoid=(), domains=(), colors=(), include_replica=False, max_size=2_000_000):
@@ -107,8 +126,7 @@ def sweep(root, avoid=(), domains=(), colors=(), include_replica=False, max_size
             try:
                 if os.path.getsize(path) > max_size or is_binary(path):
                     continue
-                with open(path, encoding="utf-8", errors="replace") as fh:
-                    lines = fh.readlines()
+                lines = read_text_lines(path)
             except OSError:
                 continue
             for i, line in enumerate(lines, 1):
@@ -156,7 +174,7 @@ def main(argv=None):
     colors = [x for x in args.colors.split(",") if x.strip()]
     if args.config:
         try:
-            with open(args.config, encoding="utf-8") as fh:
+            with open(args.config, encoding="utf-8-sig") as fh:
                 cfg = json.load(fh)
         except (OSError, ValueError) as exc:
             print("sweep: %s" % exc, file=sys.stderr)

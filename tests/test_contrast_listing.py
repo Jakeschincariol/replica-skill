@@ -44,6 +44,13 @@ class Contrast(unittest.TestCase):
             self.assertEqual(contrast.main(["#222222", "#ffffff"]), 0)
 
 
+    def test_rgb_and_hsl_functional_colors_support(self):
+        self.assertAlmostEqual(contrast.ratio("rgb(0, 0, 0)", "rgb(255, 255, 255)"), 21.0, places=2)
+        self.assertAlmostEqual(contrast.ratio("hsl(0, 0%, 0%)", "hsla(0, 0%, 100%, 1)"), 21.0, places=2)
+        cols = contrast.colours({"color": {"text": "rgb(34, 34, 34)", "bg": "hsl(0, 0%, 100%)"}})
+        self.assertEqual(cols, {"text": "rgb(34, 34, 34)", "bg": "hsl(0, 0%, 100%)"})
+
+
 class Listing(unittest.TestCase):
     def good(self):
         return {

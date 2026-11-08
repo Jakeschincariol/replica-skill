@@ -40,13 +40,20 @@ Number every case: F01-H1, F01-E3, F01-N2.
 
 ## Step 2: automate what you can
 
-Playwright, one spec per flow, against the local dev server with seed data.
-Use roles and labels for selectors (`getByRole('button', { name: 'Book' })`),
-never CSS classes. See `e2e.example.spec.ts`.
+Playwright or Cypress, one spec per flow, against the local dev server with seed data.
+Use roles and labels for selectors (`getByRole('button', { name: 'Book' })` or `cy.contains('button', 'Book')`),
+never CSS classes. See `e2e.example.spec.ts` (Playwright) and `cypress.example.cy.ts` (Cypress).
 
+For Playwright:
 ```bash
 npm i -D @playwright/test && npx playwright install chromium
 npx playwright test
+```
+
+For Cypress:
+```bash
+npm i -D cypress
+npx cypress run
 ```
 
 Add to every spec: fail on console errors, fail on any 5xx response, and an

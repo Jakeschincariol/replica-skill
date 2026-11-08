@@ -163,7 +163,7 @@ def main(argv=None):
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
     try:
-        with open(args.listing, encoding="utf-8") as fh:
+        with open(args.listing, encoding="utf-8-sig") as fh:
             listing = json.load(fh)
     except (OSError, ValueError) as exc:
         print("listing: %s" % exc, file=sys.stderr)

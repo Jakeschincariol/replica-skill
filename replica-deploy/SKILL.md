@@ -26,10 +26,11 @@ Reads everything in `replica/`. Writes `replica/deploy.md` (the checklist in
 
 ## Step 1: preflight
 
-Run every check and paste the results into `deploy.md`:
+Run the automated preflight gate runner (`preflight.py`) or each check individually, and paste the results into `deploy.md`:
 
 ```bash
-npx playwright test                                                  # replica-test
+python3 ../replica-deploy/preflight.py .                             # runs parity, contrast, sweep, listing
+npx playwright test                                                  # replica-test (or npx cypress run)
 python3 ../replica-diff/parity.py replica/features.csv               # must-haves done
 python3 ../replica-brand/sweep.py . --config replica/brand.json      # exit 0: clean
 python3 ../replica-launch/listing.py replica/launch/listing.json     # if shipping to stores
