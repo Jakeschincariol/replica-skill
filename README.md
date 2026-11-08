@@ -16,6 +16,8 @@ listing, and put it live on your domain.
 clean-room style. Not its code, its logo, its copy or its content. The
 fine print is at the bottom, and the skills enforce it.
 
+> Read in other languages: [Bahasa Indonesia (README.id.md)](./README.id.md)
+
 ## Install
 
 Paste this into Claude:
