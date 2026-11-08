@@ -30,6 +30,7 @@ reported next to the feature score, and the overall score is
 
 import argparse
 import csv
+import glob
 import json
 import sys
 
@@ -129,8 +130,15 @@ def score(rows):
 
 def visual_scores(paths):
     scores = []
+    expanded = []
     for p in paths:
-        with open(p, encoding="utf-8") as fh:
+        if any(ch in p for ch in "*?["):
+            matched = sorted(glob.glob(p))
+            expanded.extend(matched if matched else [p])
+        else:
+            expanded.append(p)
+    for p in expanded:
+        with open(p, encoding="utf-8-sig") as fh:
             data = json.load(fh)
         if "score" not in data:
             raise MatrixError("%s is not imgdiff.py --json output" % p)

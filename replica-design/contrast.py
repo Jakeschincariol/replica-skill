@@ -66,29 +66,34 @@ def ratio(fg, bg):
     return (hi + 0.05) / (lo + 0.05)
 
 
+def is_supported_color(val):
+    s = val.strip()
+    return bool(HEX.match(s) or RGB_FUNC.match(s))
+
+
 def flatten(obj, prefix=""):
     """{"color": {"text": {"muted": "#..."}}} -> {"text-muted": "#..."}."""
     out = {}
     if isinstance(obj, dict):
         if "value" in obj and isinstance(obj["value"], str):
-            out[prefix] = obj["value"]
+            out[prefix] = obj["value"].strip()
             return out
         if "$value" in obj and isinstance(obj["$value"], str):
-            out[prefix] = obj["$value"]
+            out[prefix] = obj["$value"].strip()
             return out
         for k, v in obj.items():
             if k.startswith("$") or k.startswith("_"):
                 continue
             key = "%s-%s" % (prefix, k) if prefix else k
             out.update(flatten(v, key))
-    elif isinstance(obj, str) and (HEX.match(obj.strip()) or RGB_FUNC.match(obj.strip())):
+    elif isinstance(obj, str) and is_supported_color(obj):
         out[prefix] = obj.strip()
     return out
 
 
 def colours(tokens):
     src = tokens.get("color", tokens.get("colors", tokens.get("colour", {})))
-    return {k: v for k, v in flatten(src).items() if HEX.match(v)}
+    return {k: v for k, v in flatten(src).items() if is_supported_color(v)}
 
 
 def default_pairs(cols):
@@ -141,11 +146,11 @@ def main(argv=None):
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args(argv)
     try:
-        if len(a.args) == 2 and all(HEX.match(x) for x in a.args):
+        if len(a.args) == 2 and all(is_supported_color(x) for x in a.args):
             cols = {"fg": a.args[0], "bg": a.args[1]}
             pairs = [["fg", "bg"]]
         else:
-            with open(a.args[0], encoding="utf-8") as fh:
+            with open(a.args[0], encoding="utf-8-sig") as fh:
                 tokens = json.load(fh)
             cols = colours(tokens)
             pairs = tokens.get("pairs") or default_pairs(cols)

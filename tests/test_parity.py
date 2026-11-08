@@ -77,6 +77,9 @@ class Score(unittest.TestCase):
                            parity.visual_scores([v1, v2]))
         self.assertEqual(r["layout_score"], 70.0)
         self.assertAlmostEqual(r["overall"], round(0.8 * r["feature_score"] + 14.0, 1))
+        # Also verify unexpanded glob patterns work (as passed on Windows shells)
+        glob_pattern = os.path.join(d, "*.json")
+        self.assertEqual(len(parity.visual_scores([glob_pattern])), 2)
 
     def test_bad_values_are_reported_not_fatal(self):
         p = write(self.tmp.name, "bad.csv",

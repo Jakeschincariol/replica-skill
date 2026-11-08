@@ -48,7 +48,7 @@ class FeedbackError(Exception):
 
 
 def load_themes(path=DEFAULT_THEMES):
-    with open(path, encoding="utf-8") as fh:
+    with open(path, encoding="utf-8-sig") as fh:
         data = json.load(fh)
     themes = []
     for t in data.get("themes", []):

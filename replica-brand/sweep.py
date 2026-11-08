@@ -174,7 +174,7 @@ def main(argv=None):
     colors = [x for x in args.colors.split(",") if x.strip()]
     if args.config:
         try:
-            with open(args.config, encoding="utf-8") as fh:
+            with open(args.config, encoding="utf-8-sig") as fh:
                 cfg = json.load(fh)
         except (OSError, ValueError) as exc:
             print("sweep: %s" % exc, file=sys.stderr)
