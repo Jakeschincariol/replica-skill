@@ -21,15 +21,17 @@ Exit code 1 when any pair fails AA, so it can gate a build.
 """
 
 import argparse
+import colorsys
 import json
 import re
 import sys
 
 HEX = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
-NEEDS = {"normal": (4.5, 7.0), "large": (3.0, 4.5), "ui": (3.0, 3.0)}
-
-
 RGB_FUNC = re.compile(r"^rgba?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})", re.I)
+HSL_FUNC = re.compile(
+    r"^hsla?\s*\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)%\s*,\s*(\d+(?:\.\d+)?)%", re.I
+)
+NEEDS = {"normal": (4.5, 7.0), "large": (3.0, 4.5), "ui": (3.0, 3.0)}
 
 
 def parse_color(value):
@@ -45,7 +47,13 @@ def parse_color(value):
         r, g, b = (int(x) for x in m_rgb.groups())
         if all(0 <= c <= 255 for c in (r, g, b)):
             return (r, g, b)
-    raise ValueError("not a supported hex or rgb colour: %r" % value)
+    m_hsl = HSL_FUNC.match(val)
+    if m_hsl:
+        hue, sat, lig = (float(x) for x in m_hsl.groups())
+        if 0.0 <= sat <= 100.0 and 0.0 <= lig <= 100.0:
+            r, g, b = colorsys.hls_to_rgb((hue % 360.0) / 360.0, lig / 100.0, sat / 100.0)
+            return (int(round(r * 255)), int(round(g * 255)), int(round(b * 255)))
+    raise ValueError("not a supported hex, rgb, or hsl colour: %r" % value)
 
 
 def parse_hex(value):
@@ -68,7 +76,7 @@ def ratio(fg, bg):
 
 def is_supported_color(val):
     s = val.strip()
-    return bool(HEX.match(s) or RGB_FUNC.match(s))
+    return bool(HEX.match(s) or RGB_FUNC.match(s) or HSL_FUNC.match(s))
 
 
 def flatten(obj, prefix=""):
