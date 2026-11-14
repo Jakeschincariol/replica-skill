@@ -93,7 +93,7 @@ class Listing(unittest.TestCase):
         self.assertIn("already in the name", msgs)
 
     def test_emoji_counts_as_one(self):
-        self.assertEqual(listing.length("a\U0001F468‍\U0001F4BBb"), 3)
+        self.assertEqual(listing.length("a\U0001F468\u200d\U0001F4BBb"), 3)
         self.assertEqual(listing.length("café"), 4)
 
     def test_shipped_example_is_clean(self):
