@@ -1,0 +1,14 @@
+feature,area,priority,original,clone,notes
+Choisir un titre dans le catalogue de karaoké,catalog,must,yes,no,Recréer le parcours de sélection avec des morceaux originaux ou couverts par des licences indépendantes.
+Chanter avec accompagnement et paroles à l’écran,performance,must,yes,no,La fiche décrit l’accompagnement karaoké et les paroles défilantes.
+Enregistrer une performance vocale,performance,must,yes,no,La fiche décrit l’enregistrement de la voix.
+Régler la hauteur de la voix et appliquer des effets audio,editing,must,yes,no,La fiche décrit le réglage de la hauteur et des effets audio nommés.
+Créer un duo asynchrone entre utilisateurs,duets,must,yes,no,La fiche présente les duos entre amis; le parcours d’invitation et de synchronisation reste à vérifier. Les collaborations avec des artistes exigent des autorisations et licences distinctes.
+Enregistrer ou partager une performance terminée,sharing,must,yes,no,"La fiche décrit la mise en ligne, l’écoute et le téléchargement d’enregistrements; l’écran de partage exact n’est pas montré."
+Créer un clip vidéo avec un modèle de paroles,video,should,yes,no,Fonction décrite dans la fiche Google Play; aucune capture de l’éditeur n’a été examinée.
+Appliquer des filtres à une vidéo karaoké,video,should,yes,no,Fonction décrite dans la fiche Google Play; le parcours n’a pas été vérifié.
+Écouter ou télécharger un enregistrement,recordings,should,yes,no,Fonction décrite dans la fiche Google Play; l’écran de résultat n’est pas montré.
+Rejoindre un salon KTV en direct,community,could,yes,no,Fonction annoncée hors du parcours principal sélectionné.
+Rejoindre un groupe et aimer ou commenter des performances,community,could,yes,no,Fonction annoncée hors du parcours principal sélectionné.
+Utiliser le catalogue musical et les paroles sous licence de StarMaker,content,could,yes,skip,Ne pas copier les contenus protégés du catalogue; obtenir une licence indépendante ou les remplacer par des créations originales.
+Reprendre les comptes et le graphe social des créateurs de StarMaker,community,could,yes,skip,La communauté et le contenu du produit d’origine ne sont pas transférables.

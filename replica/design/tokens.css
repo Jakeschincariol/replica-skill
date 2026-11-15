@@ -1,0 +1,88 @@
+:root {
+  color-scheme: dark;
+
+  --color-bg: #100e17;
+  --color-surface: #191722;
+  --color-surface-raised: #211e2c;
+  --color-border: #393443;
+  --color-border-input: #81798b;
+  --color-text: #f8f6fb;
+  --color-text-muted: #beb8ca;
+  --color-accent: #ffd0f0;
+  --color-on-accent: #241722;
+  --color-accent-action: #f0b5de;
+  --color-on-accent-action: #241522;
+  --color-danger: #ffb4b4;
+  --color-on-danger: #310f13;
+  --color-success: #a7edcc;
+  --color-on-success: #10261c;
+  --color-warning: #f8dca0;
+  --color-on-warning: #2b2110;
+  --color-focus: #9de9d6;
+  --color-interactive: #eac6ff;
+
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --font-size-xs: 12px;
+  --line-height-xs: 16px;
+  --font-weight-xs: 500;
+  --font-size-sm: 14px;
+  --line-height-sm: 20px;
+  --font-weight-sm: 400;
+  --font-size-base: 16px;
+  --line-height-base: 24px;
+  --font-weight-base: 400;
+  --font-size-lg: 20px;
+  --line-height-lg: 28px;
+  --font-weight-lg: 600;
+  --font-size-xl: 28px;
+  --line-height-xl: 36px;
+  --font-weight-xl: 700;
+  --font-size-display: 40px;
+  --line-height-display: 46px;
+  --font-weight-display: 750;
+
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24),
+    0 4px 16px rgba(0, 0, 0, 0.14);
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.38),
+    0 2px 6px rgba(0, 0, 0, 0.22);
+
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --layout-content-max: 1440px;
+  --layout-sidebar-width: 236px;
+  --layout-header-height: 72px;
+  --breakpoint-mobile-max: 620px;
+  --breakpoint-tablet-max: 800px;
+  --breakpoint-wide-min: 1100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
