@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111017">
+    <meta name="description" content="Chante, relève des défis et partage des duos dans une communauté karaoke.">
+    <title>Stars Makers — Ta scène, tes règles</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigation principale">
+        <a class="brand" href="#accueil" aria-label="Stars Makers, accueil">
+          <span class="brand-mark" aria-hidden="true">✦</span>
+          <span>stars<span class="brand-light">makers</span></span>
+        </a>
+        <p class="nav-label">TON ESPACE</p>
+        <nav class="side-nav">
+          <a class="nav-link active" href="#accueil"><span aria-hidden="true">⌂</span> Accueil</a>
+          <a class="nav-link" href="#decouvrir"><span aria-hidden="true">⌕</span> Découvrir</a>
+          <a class="nav-link" href="#duos"><span aria-hidden="true">♫</span> Duos</a>
+          <a class="nav-link" href="#concours"><span aria-hidden="true">♕</span> Concours</a>
+          <a class="nav-link" href="#cadeaux"><span aria-hidden="true">◇</span> Cadeaux</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="side-credit">
+            <span class="credit-gem" aria-hidden="true">✦</span>
+            <span><strong id="sidebar-credits">12</strong><small>crédits démo</small></span>
+            <button class="icon-button" data-open-subscription aria-label="Voir les abonnements démo">＋</button>
+          </div>
+          <button class="profile-button" data-open-profile>
+            <span class="avatar avatar-user">M</span>
+            <span class="profile-copy"><strong>Ma scène</strong><small>Profil démo</small></span>
+            <span class="muted" aria-hidden="true">···</span>
+          </button>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <button class="mobile-brand" data-go="accueil" aria-label="Retour à l’accueil">
+            <span class="brand-mark" aria-hidden="true">✦</span> stars<span class="brand-light">makers</span>
+          </button>
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="search-input" type="search" placeholder="Chercher un titre, une star…" autocomplete="off">
+            <kbd>⌘ K</kbd>
+          </label>
+          <div class="top-actions">
+            <button class="credit-pill" data-open-subscription aria-label="12 crédits démo, voir les abonnements">
+              <span aria-hidden="true">✦</span><strong id="top-credits">12</strong><span>crédits</span>
+            </button>
+            <button class="avatar avatar-user top-avatar" data-open-profile aria-label="Ouvrir mon profil">M</button>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section class="hero" id="accueil" aria-labelledby="hero-title">
+            <div class="hero-copy">
+              <span class="eyebrow"><span class="live-dot"></span> TA SCÈNE T’ATTEND</span>
+              <h1 id="hero-title">La prochaine voix<br>qu’on n’oublie pas ? <span>La tienne.</span></h1>
+              <p>Chante tes titres préférés, croise ta star favorite et fais vibrer la communauté.</p>
+              <div class="hero-actions">
+                <button class="button button-primary" data-sing="Neon Hearts">♫ &nbsp; Lancer ma scène</button>
+                <button class="button button-glass" data-go="concours">Voir les concours <span aria-hidden="true">↗</span></button>
+              </div>
+              <div class="hero-proof"><span class="mini-avatars"><i>A</i><i>J</i><i>S</i></span><span><strong>La communauté est là</strong><small>Chansons et stars imaginaires, vibes bien réelles.</small></span></div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <div class="halo halo-one"></div><div class="halo halo-two"></div>
+              <div class="hero-disc"><span>✦</span></div>
+              <div class="soundwave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="art-caption"><span class="live-dot"></span> STUDIO OUVERT <span>•</span> 24 CHANTEURS</div>
+              <span class="floating-note note-a">♪</span><span class="floating-note note-b">✧</span>
+            </div>
+          </section>
+
+          <section class="section-block" id="decouvrir" aria-labelledby="stars-title">
+            <div class="section-heading">
+              <div><p class="eyebrow section-eyebrow">RENCONTRE TON UNIVERS</p><h2 id="stars-title">Les stars du moment <span class="heading-spark">✦</span></h2></div>
+              <button class="text-button" data-go="duos">Voir les duos <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="star-grid">
+              <article class="star-card star-card-luna">
+                <div class="star-portrait portrait-luna"><span class="portrait-sigil">L</span><span class="verified" aria-label="Star vérifiée dans la démo">✦</span><span class="star-tag">POP · FR</span></div>
+                <div class="star-info"><div><h3>Luna Vale</h3><p>Une pop qui brille tard.</p></div><button class="round-button" data-duet="Luna Vale" data-song="Minuit électrique" aria-label="Inviter Luna Vale en duo">♫</button></div>
+              </article>
+              <article class="star-card star-card-juno">
+                <div class="star-portrait portrait-juno"><span class="portrait-sigil">J</span><span class="verified" aria-label="Star vérifiée dans la démo">✦</span><span class="star-tag">R&B · EN</span></div>
+                <div class="star-info"><div><h3>Juno Reed</h3><p>Le groove en clair-obscur.</p></div><button class="round-button" data-duet="Juno Reed" data-song="Velvet Sky" aria-label="Inviter Juno Reed en duo">♫</button></div>
+              </article>
+              <article class="star-card star-card-sol">
+                <div class="star-portrait portrait-sol"><span class="portrait-sigil">S</span><span class="verified" aria-label="Star vérifiée dans la démo">✦</span><span class="star-tag">LATIN · ES</span></div>
+                <div class="star-info"><div><h3>Sol Maré</h3><p>Des refrains couleur soleil.</p></div><button class="round-button" data-duet="Sol Maré" data-song="Bajo la luna" aria-label="Inviter Sol Maré en duo">♫</button></div>
+              </article>
+              <article class="star-card star-card-kai">
+                <div class="star-portrait portrait-kai"><span class="portrait-sigil">K</span><span class="verified" aria-label="Star vérifiée dans la démo">✦</span><span class="star-tag">ALT · JP</span></div>
+                <div class="star-info"><div><h3>Kai North</h3><p>Le calme avant l’orage.</p></div><button class="round-button" data-duet="Kai North" data-song="Paper Satellites" aria-label="Inviter Kai North en duo">♫</button></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="section-block music-contest-grid">
+            <div class="panel songs-panel">
+              <div class="section-heading compact-heading">
+                <div><p class="eyebrow section-eyebrow">À TOI LE MICRO</p><h2 id="songs-title">Choisis ton titre</h2></div>
+                <button class="text-button" id="clear-search" hidden>Effacer la recherche</button>
+              </div>
+              <div class="song-list" id="song-list" aria-labelledby="songs-title"></div>
+            </div>
+            <article class="contest-feature" id="concours">
+              <div class="contest-topline"><span class="contest-badge"><span class="live-dot"></span> DÉFI DE LA SEMAINE</span><span class="contest-prize">✧ 250 crédits démo</span></div>
+              <div class="contest-visual" aria-hidden="true"><div class="contest-orbit"></div><span class="contest-star">✦</span><span class="contest-rays">♪ &nbsp; ♫ &nbsp; ♪</span><span class="contest-disco"></span></div>
+              <p class="eyebrow section-eyebrow">JUSQU’À DIMANCHE · OUVERT AUX 18+</p>
+              <h2>Fais briller<br><span>ta version.</span></h2>
+              <p class="contest-description">« Neon Hearts » réinventé par la communauté. Ta voix, ton style, ta scène.</p>
+              <div class="contest-meta"><span><span class="mini-avatars"><i>A</i><i>N</i><i>R</i></span> <strong id="contest-count">128</strong> participations démo</span><span>⏱ 02 j 14 h</span></div>
+              <button class="button button-primary contest-join" data-join-contest>Participer au défi <span aria-hidden="true">→</span></button>
+              <small class="fiction-note">Défi fictif · sans lot réel</small>
+            </article>
+          </section>
+
+          <section class="section-block duet-gift-grid">
+            <div class="panel duet-panel" id="duos">
+              <div class="section-heading compact-heading">
+                <div><p class="eyebrow section-eyebrow">À DEUX, C’EST MIEUX</p><h2>Duos à découvrir</h2></div>
+                <button class="text-button" data-show-duets>Explorer <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="duet-list" id="duet-list"></div>
+            </div>
+            <div class="panel gift-panel" id="cadeaux">
+              <div class="section-heading compact-heading">
+                <div><p class="eyebrow section-eyebrow">ENCOURAGE LES VOIX</p><h2>Le coin des cadeaux</h2></div>
+                <span class="gift-balance">✦ <strong id="gift-credits">12</strong></span>
+              </div>
+              <p class="panel-caption">Tes crédits démo soutiennent les stars de la communauté.</p>
+              <div class="gift-grid">
+                <button class="gift-card" data-gift="3" data-gift-name="Étoile filante"><span>🌠</span><strong>Étoile</strong><small>3 crédits</small></button>
+                <button class="gift-card" data-gift="6" data-gift-name="Micro doré"><span>🎙️</span><strong>Micro doré</strong><small>6 crédits</small></button>
+                <button class="gift-card" data-gift="10" data-gift-name="Disco cosmic"><span>🪩</span><strong>Disco</strong><small>10 crédits</small></button>
+              </div>
+              <button class="text-button gift-subscribe" data-open-subscription>Plus de crédits démo <span aria-hidden="true">→</span></button>
+            </div>
+          </section>
+          <footer class="footer-note">Des univers inventés pour chanter ensemble · Musique sous licence non incluse · Démonstration, aucun achat réel.</footer>
+        </div>
+      </main>
+      <nav class="mobile-nav" aria-label="Navigation mobile">
+        <a class="active" href="#accueil"><span aria-hidden="true">⌂</span>Accueil</a>
+        <a href="#decouvrir"><span aria-hidden="true">⌕</span>Découvrir</a>
+        <a href="#duos"><span aria-hidden="true">♫</span>Duos</a>
+        <a href="#concours"><span aria-hidden="true">♕</span>Défis</a>
+        <a href="#cadeaux"><span aria-hidden="true">◇</span>Cadeaux</a>
+      </nav>
+    </div>
+
+    <div class="modal-backdrop" id="age-gate" role="dialog" aria-modal="true" aria-labelledby="age-title">
+      <div class="modal-card age-card">
+        <span class="modal-spark" aria-hidden="true">✦</span>
+        <p class="eyebrow section-eyebrow">BIENVENUE DANS LES COULISSES</p>
+        <h2 id="age-title">La scène est<br><span>réservée aux 18+.</span></h2>
+        <p>Avant d’entrer, confirme que tu as au moins 18 ans. Cette démo ne vérifie pas ton âge de manière sécurisée.</p>
+        <label class="check-row"><input id="age-confirm" type="checkbox"><span>J’ai 18 ans ou plus.</span></label>
+        <button class="button button-primary full-button" id="enter-app" disabled>Entrer dans Stars Makers <span aria-hidden="true">→</span></button>
+        <small>En entrant, tu acceptes les règles de la démo. Aucun compte n’est créé.</small>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="action-modal" role="dialog" aria-modal="true" aria-labelledby="action-title" hidden>
+      <div class="modal-card action-card">
+        <button class="modal-close" id="modal-close" data-close-modal aria-label="Fermer">×</button>
+        <div class="modal-icon" id="action-icon" aria-hidden="true">♫</div>
+        <p class="eyebrow section-eyebrow" id="action-kicker">TA SCÈNE</p>
+        <h2 id="action-title">Prêt·e à chanter ?</h2>
+        <p class="modal-description" id="action-description"></p>
+        <div class="modal-extra" id="action-extra"></div>
+        <button class="button button-primary full-button" id="action-confirm">C’est parti <span aria-hidden="true">→</span></button>
+        <small class="modal-footnote" id="action-footnote"></small>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
