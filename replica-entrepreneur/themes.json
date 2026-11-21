@@ -13,40 +13,329 @@
     "\\bdoesn'?t (have|support|let|allow)\\b",
     "\\bif only\\b",
     "\\bfeature request\\b",
-    "\\bwhy (can'?t|isn'?t|doesn'?t)\\b"
+    "\\bwhy (can'?t|isn'?t|doesn'?t)\\b",
+    "أتمنى",
+    "نتمنى",
+    "يرجى إضافة",
+    "ينقصه",
+    "يفتقر إلى",
+    "لو كان فيه",
+    "نحتاج إلى",
+    "لا يوجد خيار"
   ],
   "themes": [
-    {"id": "pricing", "label": "Price and paywalls", "kind": "complaint",
-     "patterns": ["\\bexpensive\\b", "\\boverpriced\\b", "\\bpric(e|es|ey|ing)\\b", "\\bpaywall", "\\bsubscription\\b", "\\bper (month|seat|user)\\b", "\\bfree (plan|tier|version)\\b", "\\bupgrade to\\b", "\\bpremium\\b", "\\bnot worth\\b", "\\bcost(s|ly)?\\b"]},
-    {"id": "billing", "label": "Billing, cancelling and refunds", "kind": "complaint",
-     "patterns": ["\\bcharged\\b", "\\brefund", "\\bcancel(l?ing|l?ed|lation)?\\b", "\\bauto.?renew", "\\bhidden (fee|charge)", "\\bbilling\\b", "\\bscam\\b", "\\bcredit card\\b"]},
-    {"id": "bugs", "label": "Bugs and crashes", "kind": "complaint",
-     "patterns": ["\\bcrash(es|ed|ing)?\\b", "\\bbugs?\\b", "\\bbuggy\\b", "\\bglitch", "\\bfreez(e|es|ing)\\b", "\\bbroken\\b", "\\b(doesn'?t|does not|stopped) work", "\\bnot working\\b", "\\berror\\b"]},
-    {"id": "performance", "label": "Slow, laggy, heavy", "kind": "complaint",
-     "patterns": ["\\bslow\\b", "\\blag(gy|s)?\\b", "\\bloading\\b", "\\btakes forever\\b", "\\bbattery\\b", "\\bsluggish\\b", "\\bheavy\\b"]},
-    {"id": "data", "label": "Sync and lost data", "kind": "complaint",
-     "patterns": ["\\bsync(ing|s|ed)?\\b", "\\blost (my|all)\\b", "\\bdisappear", "\\bdata loss\\b", "\\bwiped\\b", "\\bbackup\\b", "\\bduplicat"]},
-    {"id": "ux", "label": "Confusing or clunky to use", "kind": "complaint",
-     "patterns": ["\\bconfus", "\\bhard to (use|find|navigate|understand)\\b", "\\bcomplicated\\b", "\\bcluttered\\b", "\\bunintuitive\\b", "\\bnot intuitive\\b", "\\bclunky\\b", "\\btoo many (steps|clicks|taps)\\b", "\\blearning curve\\b", "\\bcan'?t find\\b"]},
-    {"id": "support", "label": "Support that does not answer", "kind": "complaint",
-     "patterns": ["\\bcustomer (service|support)\\b", "\\bsupport (team|is|was)\\b", "\\bno (response|reply)\\b", "\\bnever (replied|responded|heard back)\\b", "\\bticket\\b", "\\bchat ?bot\\b"]},
-    {"id": "account", "label": "Login and account problems", "kind": "complaint",
-     "patterns": ["\\blog ?in\\b", "\\bsign ?in\\b", "\\bpassword\\b", "\\blocked out\\b", "\\bverification\\b", "\\b2fa\\b", "\\bdelete (my )?account\\b"]},
-    {"id": "notifications", "label": "Notifications and spam", "kind": "complaint",
-     "patterns": ["\\bnotification", "\\bspam", "\\btoo many emails\\b", "\\bpush\\b", "\\breminders?\\b"]},
-    {"id": "ads", "label": "Ads", "kind": "complaint",
-     "patterns": ["\\bads\\b", "\\badvert", "\\bad.?supported\\b", "\\bpop.?ups?\\b"]},
-    {"id": "updates", "label": "A redesign or update made it worse", "kind": "complaint",
-     "patterns": ["\\b(new|latest|recent) (update|version|design)\\b", "\\bredesign", "\\bused to be\\b", "\\bbring back\\b", "\\bsince the update\\b"]},
-    {"id": "privacy", "label": "Privacy and permissions", "kind": "complaint",
-     "patterns": ["\\bprivacy\\b", "\\btracking\\b", "\\bsell(s|ing)? (my )?data\\b", "\\bpermissions?\\b", "\\bcreepy\\b"]},
-    {"id": "integrations", "label": "Integrations, import and export", "kind": "request",
-     "patterns": ["\\bintegrat", "\\bzapier\\b", "\\bgoogle (calendar|sheets|drive)\\b", "\\boutlook\\b", "\\bslack\\b", "\\bapi\\b", "\\bexport\\b", "\\bimport\\b", "\\bcsv\\b", "\\bwebhook"]},
-    {"id": "platforms", "label": "Platforms, offline and mobile", "kind": "request",
-     "patterns": ["\\boffline\\b", "\\bandroid\\b", "\\bipad\\b", "\\btablet\\b", "\\bdesktop app\\b", "\\bmac app\\b", "\\bwindows\\b", "\\bmobile (app|version)\\b", "\\bweb version\\b"]},
-    {"id": "customisation", "label": "Customisation and control", "kind": "request",
-     "patterns": ["\\bcustomi[sz]", "\\bdark mode\\b", "\\btheme\\b", "\\bbranding\\b", "\\bwhite.?label\\b", "\\btemplates?\\b", "\\bsettings?\\b", "\\boption to\\b"]},
-    {"id": "collaboration", "label": "Teams and sharing", "kind": "request",
-     "patterns": ["\\bteam(s|mates?)?\\b", "\\bshar(e|ing)\\b", "\\bcollaborat", "\\bmultiple (users|accounts|people)\\b", "\\broles?\\b", "\\bpermissions for\\b"]}
+    {
+      "id": "pricing",
+      "label": "Price and paywalls",
+      "kind": "complaint",
+      "patterns": [
+        "\\bexpensive\\b",
+        "\\boverpriced\\b",
+        "\\bpric(e|es|ey|ing)\\b",
+        "\\bpaywall",
+        "\\bsubscription\\b",
+        "\\bper (month|seat|user)\\b",
+        "\\bfree (plan|tier|version)\\b",
+        "\\bupgrade to\\b",
+        "\\bpremium\\b",
+        "\\bnot worth\\b",
+        "\\bcost(s|ly)?\\b",
+        "غالي",
+        "مكلف",
+        "سعر",
+        "أسعار",
+        "اشتراك",
+        "مدفوع",
+        "لا يستحق"
+      ]
+    },
+    {
+      "id": "billing",
+      "label": "Billing, cancelling and refunds",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcharged\\b",
+        "\\brefund",
+        "\\bcancel(l?ing|l?ed|lation)?\\b",
+        "\\bauto.?renew",
+        "\\bhidden (fee|charge)",
+        "\\bbilling\\b",
+        "\\bscam\\b",
+        "\\bcredit card\\b",
+        "خصم مبلغ",
+        "استرجاع",
+        "إلغاء الاشتراك",
+        "تجديد تلقائي",
+        "بطاقة ائتمان",
+        "فاتورة"
+      ]
+    },
+    {
+      "id": "bugs",
+      "label": "Bugs and crashes",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcrash(es|ed|ing)?\\b",
+        "\\bbugs?\\b",
+        "\\bbuggy\\b",
+        "\\bglitch",
+        "\\bfreez(e|es|ing)\\b",
+        "\\bbroken\\b",
+        "\\b(doesn'?t|does not|stopped) work",
+        "\\bnot working\\b",
+        "\\berror\\b",
+        "يعلق",
+        "يتعطل",
+        "انهيار",
+        "خطأ",
+        "أخطاء",
+        "لا يعمل",
+        "توقف عن العمل",
+        "مشكلة تقنية"
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Slow, laggy, heavy",
+      "kind": "complaint",
+      "patterns": [
+        "\\bslow\\b",
+        "\\blag(gy|s)?\\b",
+        "\\bloading\\b",
+        "\\btakes forever\\b",
+        "\\bbattery\\b",
+        "\\bsluggish\\b",
+        "\\bheavy\\b",
+        "بطيء",
+        "ثقيل",
+        "تأخير",
+        "يستهلك البطارية",
+        "تحميل طويل"
+      ]
+    },
+    {
+      "id": "data",
+      "label": "Sync and lost data",
+      "kind": "complaint",
+      "patterns": [
+        "\\bsync(ing|s|ed)?\\b",
+        "\\blost (my|all)\\b",
+        "\\bdisappear",
+        "\\bdata loss\\b",
+        "\\bwiped\\b",
+        "\\bbackup\\b",
+        "\\bduplicat",
+        "مزامنة",
+        "فقدان البيانات",
+        "اختفت",
+        "حذف",
+        "نسخ احتياطي",
+        "مكرر"
+      ]
+    },
+    {
+      "id": "ux",
+      "label": "Confusing or clunky to use",
+      "kind": "complaint",
+      "patterns": [
+        "\\bconfus",
+        "\\bhard to (use|find|navigate|understand)\\b",
+        "\\bcomplicated\\b",
+        "\\bcluttered\\b",
+        "\\bunintuitive\\b",
+        "\\bnot intuitive\\b",
+        "\\bclunky\\b",
+        "\\btoo many (steps|clicks|taps)\\b",
+        "\\blearning curve\\b",
+        "\\bcan'?t find\\b",
+        "معقد",
+        "صعب الاستخدام",
+        "مربك",
+        "واجهة مزدحمة",
+        "غير واضح"
+      ]
+    },
+    {
+      "id": "support",
+      "label": "Support that does not answer",
+      "kind": "complaint",
+      "patterns": [
+        "\\bcustomer (service|support)\\b",
+        "\\bsupport (team|is|was)\\b",
+        "\\bno (response|reply)\\b",
+        "\\bnever (replied|responded|heard back)\\b",
+        "\\bticket\\b",
+        "\\bchat ?bot\\b",
+        "خدمة العملاء",
+        "الدعم الفني",
+        "لا يرد",
+        "تجاهل",
+        "تذكرة دعم"
+      ]
+    },
+    {
+      "id": "account",
+      "label": "Login and account problems",
+      "kind": "complaint",
+      "patterns": [
+        "\\blog ?in\\b",
+        "\\bsign ?in\\b",
+        "\\bpassword\\b",
+        "\\blocked out\\b",
+        "\\bverification\\b",
+        "\\b2fa\\b",
+        "\\bdelete (my )?account\\b",
+        "تسجيل الدخول",
+        "كلمة المرور",
+        "حسابي",
+        "رمز التحقق",
+        "حذف الحساب"
+      ]
+    },
+    {
+      "id": "notifications",
+      "label": "Notifications and spam",
+      "kind": "complaint",
+      "patterns": [
+        "\\bnotification",
+        "\\bspam",
+        "\\btoo many emails\\b",
+        "\\bpush\\b",
+        "\\breminders?\\b",
+        "إشعارات",
+        "اشعارات",
+        "إزعاج",
+        "رسائل متكررة",
+        "تنبيهات"
+      ]
+    },
+    {
+      "id": "ads",
+      "label": "Ads",
+      "kind": "complaint",
+      "patterns": [
+        "\\bads\\b",
+        "\\badvert",
+        "\\bad.?supported\\b",
+        "\\bpop.?ups?\\b",
+        "إعلانات",
+        "اعلانات",
+        "نوافذ منبثقة"
+      ]
+    },
+    {
+      "id": "updates",
+      "label": "A redesign or update made it worse",
+      "kind": "complaint",
+      "patterns": [
+        "\\b(new|latest|recent) (update|version|design)\\b",
+        "\\bredesign",
+        "\\bused to be\\b",
+        "\\bbring back\\b",
+        "\\bsince the update\\b",
+        "التحديث الأخير",
+        "التحديث الجديد",
+        "التصميم القديم",
+        "بعد التحديث"
+      ]
+    },
+    {
+      "id": "privacy",
+      "label": "Privacy and permissions",
+      "kind": "complaint",
+      "patterns": [
+        "\\bprivacy\\b",
+        "\\btracking\\b",
+        "\\bsell(s|ing)? (my )?data\\b",
+        "\\bpermissions?\\b",
+        "\\bcreepy\\b",
+        "خصوصية",
+        "تتبع",
+        "بياناتي",
+        "صلاحيات"
+      ]
+    },
+    {
+      "id": "integrations",
+      "label": "Integrations, import and export",
+      "kind": "request",
+      "patterns": [
+        "\\bintegrat",
+        "\\bzapier\\b",
+        "\\bgoogle (calendar|sheets|drive)\\b",
+        "\\boutlook\\b",
+        "\\bslack\\b",
+        "\\bapi\\b",
+        "\\bexport\\b",
+        "\\bimport\\b",
+        "\\bcsv\\b",
+        "\\bwebhook",
+        "تكامل",
+        "ربط مع",
+        "تصدير",
+        "استيراد",
+        "تقويم جوجل",
+        "سلاك"
+      ]
+    },
+    {
+      "id": "platforms",
+      "label": "Platforms, offline and mobile",
+      "kind": "request",
+      "patterns": [
+        "\\boffline\\b",
+        "\\bandroid\\b",
+        "\\bipad\\b",
+        "\\btablet\\b",
+        "\\bdesktop app\\b",
+        "\\bmac app\\b",
+        "\\bwindows\\b",
+        "\\bmobile (app|version)\\b",
+        "\\bweb version\\b",
+        "بدون إنترنت",
+        "أندرويد",
+        "آيباد",
+        "تطبيق سطح المكتب",
+        "نسخة ويب"
+      ]
+    },
+    {
+      "id": "customisation",
+      "label": "Customisation and control",
+      "kind": "request",
+      "patterns": [
+        "\\bcustomi[sz]",
+        "\\bdark mode\\b",
+        "\\btheme\\b",
+        "\\bbranding\\b",
+        "\\bwhite.?label\\b",
+        "\\btemplates?\\b",
+        "\\bsettings?\\b",
+        "\\boption to\\b",
+        "تخصيص",
+        "الوضع الليلي",
+        "الوضع الداكن",
+        "قوالب",
+        "إعدادات"
+      ]
+    },
+    {
+      "id": "collaboration",
+      "label": "Teams and sharing",
+      "kind": "request",
+      "patterns": [
+        "\\bteam(s|mates?)?\\b",
+        "\\bshar(e|ing)\\b",
+        "\\bcollaborat",
+        "\\bmultiple (users|accounts|people)\\b",
+        "\\broles?\\b",
+        "\\bpermissions for\\b",
+        "فريق",
+        "مشاركة",
+        "تعاون",
+        "صلاحيات الفريق",
+        "عدة مستخدمين"
+      ]
+    }
   ]
 }
