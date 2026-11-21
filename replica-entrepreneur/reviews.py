@@ -40,7 +40,13 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_THEMES = os.path.join(HERE, "themes.json")
-SENTENCE = re.compile(r"(?<=[.!?])\s+|\n+")
+SENTENCE = re.compile(r"(?<=[.!?؟])\s+|\n+")
+_AR_DIGITS = str.maketrans("٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹", "01234567890123456789")
+_AR_DIAC = re.compile(r"[\u0610-\u061A\u064B-\u065F\u0670\u0640]")
+_CONTRAST_RE = re.compile(r"(\bbut\b|\bhowever\b|\bwish\b|\bexcept\b|\balthough\b|\bstill\b|لكن|إلا أن|أتمنى|ينقصه|عيب)", re.I)
+
+def _norm_text(s):
+    return _AR_DIAC.sub("", (s or "")).translate(_AR_DIGITS)
 
 
 class FeedbackError(Exception):
@@ -72,7 +78,7 @@ def parse_date(text):
 
 
 def parse_rating(text):
-    text = (text or "").strip()
+    text = _norm_text(text).strip()
     if not text:
         return None
     m = re.match(r"^\s*(\d+(?:\.\d+)?)", text)
@@ -160,15 +166,21 @@ def analyse(reviews, themes, request_patterns, today=None, months=18):
     for rv in reviews:
         w = weight(rv, today, months)
         matched = False
+        norm_rv_text = _norm_text(rv["text"])
         for t in themes:
-            hit = next((p for p in t["patterns"] if p.search(rv["text"])), None)
+            if t["kind"] == "complaint" and rv["rating"] is not None:
+                if rv["rating"] >= 5 and not _CONTRAST_RE.search(norm_rv_text):
+                    continue
+                if rv["rating"] >= 4 and not _CONTRAST_RE.search(norm_rv_text):
+                    continue
+            hit = next((p for p in t["patterns"] if p.search(rv["text"]) or p.search(norm_rv_text)), None)
             if hit is None:
                 continue
             matched = True
             res = results[t["id"]]
             res["score"] += w
             res["reviews"].append({"rv": rv, "quote": snippet(rv["text"], hit)})
-        req = next((p for p in request_patterns if p.search(rv["text"])), None)
+        req = next((p for p in request_patterns if p.search(rv["text"]) or p.search(norm_rv_text)), None)
         if req is not None:
             requests.append({"quote": snippet(rv["text"], req), "url": rv["url"],
                              "source": rv["source"], "rating": rv["rating"]})
